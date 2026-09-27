@@ -1,0 +1,123 @@
+<div class="page">
+
+  <header class="page-header">
+    <h1>Thessaloniki Pharmacies</h1>
+    <p>Find pharmacies on duty</p>
+  </header>
+
+  <section class="filters">
+
+    <div class="filter-group">
+      <label for="date">
+        Date
+      </label>
+
+      <input id="date" type="date" [(ngModel)]="selectedDate" (change)="onDateChange()">
+    </div>
+
+    <div class="filter-group">
+      <label for="area">
+        Area
+      </label>
+
+      <select id="area" [(ngModel)]="selectedArea" (change)="onAreaChange()">
+
+        <option value="">
+          All areas
+        </option>
+
+        @for (area of areas; track area) {
+        <option [value]="area">
+          {{ area }}
+        </option>
+        }
+
+      </select>
+    </div>
+
+  </section>
+
+  @if (loading) {
+  <div class="loading">
+    Loading pharmacies...
+  </div>
+  }
+
+  @if (error) {
+  <div class="error-message">
+    {{ error }}
+  </div>
+  }
+
+  @if (!loading && !error && pharmacies.length > 0) {
+
+  <div class="results-header">
+    <strong>{{ pharmacies.length }}</strong>
+    <span>
+      {{ pharmacies.length === 1 ? 'pharmacy' : 'pharmacies' }}
+    </span>
+  </div>
+
+  <div class="pharmacy-list">
+
+    @for (pharmacy of pharmacies; track pharmacy.pharmacyId) {
+
+    <article class="pharmacy-card">
+
+      <div class="pharmacy-card-header">
+
+        <h2>
+          {{ pharmacy.name || 'Unnamed pharmacy' }}
+        </h2>
+
+        @if (pharmacy.dutyType) {
+        <span class="duty-badge">
+          {{ pharmacy.dutyType }}
+        </span>
+        }
+
+      </div>
+
+      @if (pharmacy.address) {
+      <div class="info-row">
+        <span class="icon">📍</span>
+        <span>{{ pharmacy.address }}</span>
+      </div>
+      }
+
+      @if (pharmacy.area) {
+      <div class="info-row">
+        <span class="icon">🏘️</span>
+        <span>{{ pharmacy.area }}</span>
+      </div>
+      }
+
+      @if (pharmacy.phone) {
+      <div class="info-row">
+        <span class="icon">📞</span>
+        <a [href]="'tel:' + pharmacy.phone">
+          {{ pharmacy.phone }}
+        </a>
+      </div>
+      }
+
+      @if (pharmacy.latitude !== null && pharmacy.longitude !== null) {
+      <div class="coordinates">
+        {{ pharmacy.latitude }}, {{ pharmacy.longitude }}
+      </div>
+      }
+
+    </article>
+
+    }
+
+  </div>
+  }
+
+  @if (!loading && !error && pharmacies.length === 0) {
+  <div class="empty-message">
+    No pharmacies found for the selected filters.
+  </div>
+  }
+
+</div>
